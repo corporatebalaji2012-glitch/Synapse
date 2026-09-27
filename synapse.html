@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synapse - Articles, Ideas & Perspectives</title>
+    <style>
+        :root {
+            --card-bg: rgba(255,255,255,0.92);
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --accent: #0284c7;
+            --accent-dark: #0369a1;
+            --border-color: #bae6fd;
+            --soft-blue: #e0f2fe;
+            --success: #16a34a;
+            --danger: #dc2626;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(rgba(240,247,255,0.88), rgba(224,242,254,0.88)), url("https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1920&auto=format&fit=crop") center/cover fixed;
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        button, a { font-family: inherit; }
+
+        /* ================= HEADER ================= */
+        header {
+            background: var(--card-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .logo {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 1.55rem;
+            font-weight: 800;
+            letter-spacing: -0.7px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .logo span { color: var(--accent); }
+        nav ul { display: flex; align-items: center; gap: 1.35rem; list-style: none; }
+        nav a {
+            position: relative;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.94rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding-bottom: 5px;
+            transition: color 0.2s ease;
+        }
+        nav a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.25s ease;
+        }
+        nav a:hover, nav a.active { color: var(--accent); }
+        nav a:hover::after, nav a.active::after { width: 100%; }
+        .menu-toggle {
+            display: none;
+            border: 1px solid var(--border-color);
+            background: rgba(255,255,255,0.95);
+            color: var(--text-main);
+            border-radius: 8px;
+            padding: 0.45rem 0.7rem;
+            font-size: 1.15rem;
+            cursor: pointer;
+        }
+
+        /* ================= PAGE SYSTEM ================= */
+        .page-view { display: none; }
+        .page-view.active-page { display: block; }
+
+        /* ================= HERO ================= */
+        .hero {
+            position: relative;
+            text-align: center;
+            padding: 4.8rem 1rem 3.5rem;
+            background: linear-gradient(135deg, rgba(224,242,254,0.78), rgba(240,247,255,0.78), rgba(255,255,255,0.78));
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+        .hero-content { max-width: 850px; margin: auto; }
+        .hero-logo-container {
+            width: 120px; height: 120px;
+            margin: 0 auto 1.25rem;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; border-radius: 50%;
+            background: white; border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(2,132,199,0.15);
+        }
+        .hero-logo { width: 100%; height: 100%; object-fit: cover; }
+        .hero h1 { font-size: clamp(2.1rem, 5vw, 2.9rem); line-height: 1.15; margin-bottom: 1rem; letter-spacing: -1.2px; }
+        .hero p { color: var(--text-muted); font-size: 1.08rem; max-width: 720px; margin: auto; }
+        .back-home-btn {
+            position: absolute; top: 1.2rem; left: 1.5rem;
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 0.45rem 0.9rem; background: rgba(255,255,255,0.95);
+            border: 1px solid var(--border-color); border-radius: 50px;
+            color: var(--accent); text-decoration: none; font-size: 0.84rem; font-weight: 700; cursor: pointer; transition: 0.2s ease;
+        }
+        .back-home-btn:hover { background: var(--accent); color: white; transform: translateY(-2px); }
+
+        /* ================= GENERAL ================= */
+        .container { max-width: 1200px; margin: auto; padding: 0 2rem 2rem; }
+        .content-box {
+            max-width: 820px; margin: 3rem auto; padding: 3rem;
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 14px; box-shadow: 0 12px 30px rgba(2,132,199,0.12); text-align: center;
+        }
+        .content-box h2 { font-size: 2rem; margin-bottom: 1rem; }
+        .content-box p { color: var(--text-muted); margin-bottom: 1rem; font-size: 1.05rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.8rem; }
+
+        /* ================= CARDS ================= */
+        .card {
+            position: relative; display: flex; flex-direction: column; overflow: hidden;
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 13px;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--accent); }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(2,132,199,0.16); }
+        .card-content { padding: 1.7rem; display: flex; flex-direction: column; flex-grow: 1; }
+        .tag {
+            align-self: flex-start; background: var(--soft-blue); color: var(--accent);
+            padding: 0.25rem 0.7rem; border-radius: 50px; font-size: 0.72rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.9rem;
+        }
+        .card h3 { font-size: 1.25rem; margin-bottom: 0.7rem; }
+        .card p { color: var(--text-muted); font-size: 0.94rem; margin-bottom: 1.4rem; flex-grow: 1; }
+
+        /* ================= BUTTONS ================= */
+        .btn {
+            display: inline-block; border: none; background: var(--accent); color: white;
+            padding: 0.62rem 1rem; border-radius: 7px; font-size: 0.88rem; font-weight: 700;
+            text-decoration: none; cursor: pointer; transition: background 0.2s ease, transform 0.15s ease;
+        }
+        .btn:hover { background: var(--accent-dark); transform: translateY(-1px); }
+        .btn-primary { width: 100%; }
+        .card-actions { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .card-actions .btn { flex: 1; }
+
+        /* ================= BOOKS ================= */
+        .genre-section { max-width: 900px; margin: 0 auto 3rem; }
+        .genre-title { font-size: 1.5rem; margin-bottom: 1.2rem; padding-bottom: 0.55rem; border-bottom: 2px solid var(--border-color); }
+        .ebook-card {
+            position: relative; display: flex; overflow: hidden; background: var(--card-bg);
+            border: 1px solid var(--border-color); border-radius: 14px; box-shadow: 0 12px 28px rgba(2,132,199,0.12);
+            transition: transform 0.25s ease, box-shadow 0.25s ease; margin-bottom: 1.5rem;
+        }
+        .ebook-card:hover { transform: translateY(-4px); box-shadow: 0 18px 35px rgba(2,132,199,0.18); }
+        .ebook-badge {
+            position: absolute; top: 15px; left: 15px; z-index: 5; background: var(--accent); color: white;
+            padding: 4px 10px; border-radius: 5px; font-size: 0.68rem; font-weight: 800; text-transform: uppercase;
+        }
+        .ebook-cover { width: 190px; min-height: 255px; object-fit: cover; object-position: top; background: var(--soft-blue); }
+        .ebook-content { flex: 1; padding: 1.6rem; display: flex; flex-direction: column; justify-content: space-between; }
+        .ebook-title { font-size: 1.35rem; margin-bottom: 0.25rem; }
+        .ebook-author { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.8rem; }
+        .ebook-description { color: var(--text-muted); font-size: 0.94rem; margin-bottom: 1rem; }
+        .ebook-footer { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; }
+        .ebook-price { margin-right: auto; color: var(--success); font-size: 1.1rem; font-weight: 800; }
+        .ebook-btn {
+            display: inline-flex; align-items: center; justify-content: center; background: var(--accent); color: white;
+            border: none; padding: 0.55rem 0.8rem; border-radius: 6px; font-size: 0.78rem; font-weight: 700;
+            text-decoration: none; cursor: pointer; transition: 0.2s ease;
+        }
+        .ebook-btn:hover { background: var(--accent-dark); transform: translateY(-1px); }
+
+        /* ================= POEMS ================= */
+        .poem-card { max-width: 760px; margin: 0 auto 2rem; padding: 2rem; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; box-shadow: 0 12px 28px rgba(2,132,199,0.12); }
+        .poem-title { text-align: center; font-size: 1.55rem; margin-bottom: 0.3rem; }
+        .poem-author { text-align: center; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1.4rem; }
+        .poem-text { text-align: center; white-space: pre-line; line-height: 1.9; font-size: 1.03rem; }
+
+        /* ================= ADMIN PANEL STYLES ================= */
+        .admin-box { background: white; padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 2rem; box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
+        .admin-box h3 { margin-bottom: 1rem; color: var(--accent-dark); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
+        .form-group { margin-bottom: 1rem; text-align: left; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.88rem; margin-bottom: 0.3rem; color: var(--text-main); }
+        .form-control { width: 100%; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.95rem; }
+        textarea.form-control { resize: vertical; min-height: 100px; }
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 1rem; text-align: left; font-size: 0.9rem; }
+        .admin-table th, .admin-table td { padding: 0.75rem; border-bottom: 1px solid var(--border-color); }
+        .admin-table th { background: var(--soft-blue); color: var(--accent-dark); }
+        .btn-danger { background: var(--danger); }
+        .btn-danger:hover { background: #b91c1c; }
+
+        /* ================= MODAL ================= */
+        .modal-overlay { display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(15,23,42,0.7); backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px); align-items: center; justify-content: center; padding: 1rem; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { position: relative; width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto; padding: 2rem; background: white; border-radius: 15px; box-shadow: 0 25px 60px rgba(0,0,0,0.3); }
+        .modal-close { position: absolute; top: 12px; right: 16px; border: none; background: transparent; color: var(--text-muted); font-size: 1.8rem; cursor: pointer; }
+        .modal-img { display: block; width: 150px; height: 205px; margin: 0 auto 1.0rem; object-fit: cover; border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+        .modal-title { text-align: center; font-size: 1.45rem; margin-bottom: 1rem; }
+        .modal-text { color: var(--text-muted); font-size: 0.95rem; line-height: 1.75; white-space: pre-line; text-align: left; }
+
+        /* ================= TOAST ================= */
+        .toast { position: fixed; left: 50%; bottom: 25px; transform: translate(-50%,20px); z-index: 3000; padding: 0.75rem 1rem; background: #0f172a; color: white; border-radius: 9px; opacity: 0; pointer-events: none; transition: 0.25s ease; }
+        .toast.show { opacity: 1; transform: translate(-50%,0); }
+
+        /* ================= FOOTER ================= */
+        footer { margin-top: 4rem; padding: 2rem 1rem; text-align: center; color: var(--text-muted); font-size: 0.88rem; background: var(--card-bg); border-top: 1px solid var(--border-color); backdrop-filter: blur(10px); }
+
+        /* ================= MOBILE ================= */
+        @media (max-width: 768px) {
+            header { padding: 1rem; }
+            .menu-toggle { display: inline-flex; align-items: center; justify-content: center; }
+            header nav { display: none; position: absolute; top: 100%; left: 0; right: 0; background: rgba(255,255,255,0.98); border-bottom: 1px solid var(--border-color); padding: 0.7rem 1rem; box-shadow: 0 10px 25px rgba(15,23,42,0.1); }
+            header nav.open { display: block; }
+            nav ul { flex-direction: column; align-items: stretch; gap: 0.1rem; }
+            nav a { display: block; padding: 0.7rem 0.5rem; }
+            .hero { padding: 4.5rem 1rem 3rem; }
+            .container { padding-left: 1rem; padding-right: 1rem; }
+            .content-box { padding: 2rem 1.25rem; }
+            .ebook-card { flex-direction: column; }
+            .ebook-cover { width: 100%; height: 300px; }
+            .ebook-content { padding: 1.3rem; }
+            .back-home-btn { top: 0.8rem; left: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+    <a class="logo" onclick="switchPage('home')">Synapse<span>.</span></a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">☰</button>
+    <nav id="siteNav">
+        <ul>
+            <li><a id="nav-home" class="active" onclick="switchPage('home')">Home</a></li>
+            <li><a id="nav-articles" onclick="switchPage('articles')">Articles</a></li>
+            <li><a id="nav-topics" onclick="switchPage('topics')">Topics</a></li>
+            <li><a id="nav-books-by-kt" onclick="switchPage('books-by-kt')">Books by KT</a></li>
+            <li><a id="nav-poems-for-kidz" onclick="switchPage('poems-for-kidz')">Poems by KT</a></li>
+            <li><a id="nav-about" onclick="switchPage('about')">About</a></li>
+            <li><a id="nav-contact" onclick="switchPage('contact')">Contact</a></li>
+            <li><a id="nav-admin" onclick="handleAdminNavClick()" style="color:var(--accent);">⚙️ Admin</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- HOME -->
+<div id="home" class="page-view active-page">
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-logo-container">
+                <img src="synapse logo.jpeg" alt="Synapse Logo" class="hero-logo">
+            </div>
+            <h1>Ideas That Connect.</h1>
+            <p>Articles, ideas, perspectives, books and creative works exploring technology, science, philosophy, design, culture and the future.</p>
+        </div>
+    </section>
+    <div class="container">
+        <div class="content-box">
+            <h2>Welcome to Synapse</h2>
+            <p>A creative publishing space where ideas connect, perspectives evolve and imagination meets innovation.</p>
+            <button class="btn" onclick="switchPage('articles')">Explore Articles</button>
+            <button class="btn" onclick="switchPage('books-by-kt')">Explore Books</button>
+        </div>
+        <h2 style="text-align:center; margin:3rem 0 1.5rem;">Featured</h2>
+        <div class="grid" id="featuredGrid"></div>
+    </div>
+</div>
+
+<!-- ARTICLES -->
+<div id="articles" class="page-view">
+    <section class="hero">
+        <a class="back-home-btn" onclick="switchPage('home')">← Back to Home</a>
+        <div class="hero-content">
+            <h1>Articles</h1>
+            <p>Ideas, analysis and perspectives from the world around us.</p>
+        </div>
+    </section>
+    <div class="container">
+        <div class="grid" id="articlesGrid"></div>
+    </div>
+</div>
+
+<!-- TOPICS -->
+<div id="topics" class="page-view">
+    <section class="hero">
+        <a class="back-home-btn" onclick="switchPage('home')">← Back to Home</a>
+        <div class="hero-content">
+            <h1>Topics</h1>
+            <p>Explore ideas across technology, philosophy, design, science, culture and the future.</p>
+        </div>
+    </section>
+    <div class="container" id="topicsContainer"></div>
+</div>
+
+<!-- BOOKS BY KT -->
+<div id="books-by-kt" class="page-view">
+    <section class="hero">
+        <a class="back-home-btn" onclick="switchPage('home')">← Back to Home</a>
+        <div class="hero-content">
+            <h1>📖 Books by KT</h1>
+            <p>Explore literary works written and curated by Kavyansh Tomar.</p>
+        </div>
+    </section>
+    <div class="container" id="booksContainer"></div>
+</div>
+
+<!-- POEMS -->
+<div id="poems-for-kidz" class="page-view">
+    <section class="hero">
+        <a class="back-home-btn" onclick="switchPage('home')">← Back to Home</a>
+        <div class="hero-content">
+            <h1>✍️ Poems by KT</h1>
+            <p>A collection of original poetry by Kavyansh Tomar.</p>
+        </div>
+    </section>
+    <div class="container" id="poemsContainer"></div>
+</div>
+
+<!-- ABOUT -->
+<div id="about" class="page-view">
+    <section class="hero">
+        <a class="back-home-btn" onclick="switchPage('home')">← Back to Home</a>
+        <div class="hero-content">
+            <h1>About Synapse</h1>
+            <p>An independent creative publishing platform.</p>
+        </div>
+    </section>
+    <div class="container">
+        <div class="content-box">
+            <h2>Ideas. Creativity. Perspective.</h2>
+            <p>Synapse is a creative publishing space for technology, science, philosophy, design, culture, books, poetry and ideas.</p>
+            <p>Created and designed by <strong>Kavyansh Tomar</strong>.</p>
+        </div>
+    </div>
+</div>
+
+<!-- CONTACT -->
+<div id="contact" class="page-view">
+    <section class="hero">
+        <a class="back-home-btn" onclick="switchPage('home')">← Back to Home</a>
+        <div class="hero-content">
+            <h1>Contact</h1>
+            <p>Have an idea, question or creative project?</p>
+        </div>
+    </section>
+    <div class="container">
+        <div class="content-box">
+            <h2>Get in Touch</h2>
+            <p>For questions, collaborations or feedback, send an email.</p>
+            <a href="mailto:contact@synapse.com" class="btn">Email Synapse</a>
+        </div>
+    </div>
+</div>
+
+<!-- ADMIN PANEL VIEW -->
+<div id="admin" class="page-view">
+    <section class="hero">
+        <a class="back-home-btn" onclick="switchPage('home')">← Back to Home</a>
+        <div class="hero-content">
+            <h1>⚙️ Admin Control Panel</h1>
+            <p>Manage, add, and remove all articles, topics, books, and poems easily.</p>
+        </div>
+    </section>
+    <div class="container" style="max-width:900px;">
+        
+        <!-- ADD ARTICLE -->
+        <div class="admin-box">
+            <h3>📝 Add New Article</h3>
+            <form onsubmit="handleAddArticle(event)">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="artTitle" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Category (e.g. Technology, Philosophy)</label>
+                    <input type="text" id="artTag" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Short Description (Card view)</label>
+                    <textarea id="artDesc" class="form-control" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Full Content (Modal view)</label>
+                    <textarea id="artContent" class="form-control" style="min-height:150px;" required></textarea>
+                </div>
+                <button type="submit" class="btn">Publish Article</button>
+            </form>
+        </div>
+
+        <!-- ADD BOOK -->
+        <div class="admin-box">
+            <h3>📖 Add New Book</h3>
+            <form onsubmit="handleAddBook(event)">
+                <div class="form-group">
+                    <label>Book Title</label>
+                    <input type="text" id="bookTitle" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Genre / Section (e.g. Biographies, Horror & Fantasy)</label>
+                    <input type="text" id="bookGenre" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Author</label>
+                    <input type="text" id="bookAuthor" class="form-control" value="Kavyansh Tomar" required>
+                </div>
+                <div class="form-group">
+                    <label>Price (e.g. ₹750)</label>
+                    <input type="text" id="bookPrice" class="form-control" value="₹750" required>
+                </div>
+                <div class="form-group">
+                    <label>Cover Image filename / URL (e.g. walking t the shadows.jpeg)</label>
+                    <input type="text" id="bookImg" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="bookDesc" class="form-control" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Full Preview Text</label>
+                    <textarea id="bookPreview" class="form-control" style="min-height:150px;" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Download DOCX Path (e.g. Books/Walking-Through-the-Shadows.docx)</label>
+                    <input type="text" id="bookDocx" class="form-control" value="Books/" required>
+                </div>
+                <button type="submit" class="btn">Add Book</button>
+            </form>
+        </div>
+
+        <!-- ADD POEM -->
+        <div class="admin-box">
+            <h3>✍️ Add New Poem</h3>
+            <form onsubmit="handleAddPoem(event)">
+                <div class="form-group">
+                    <label>Poem Title</label>
+                    <input type="text" id="poemTitle" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Poem Stanzas / Lines</label>
+                    <textarea id="poemText" class="form-control" style="min-height:150px;" required></textarea>
+                </div>
+                <button type="submit" class="btn">Publish Poem</button>
+            </form>
+        </div>
+
+        <!-- MANAGEMENT LISTS -->
+        <div class="admin-box">
+            <h3>🗑️ Manage Existing Content</h3>
+            <div style="margin-bottom:1.5rem;">
+                <h4>Articles</h4>
+                <table class="admin-table" id="adminArticlesTable"></table>
+            </div>
+            <div style="margin-bottom:1.5rem;">
+                <h4>Books</h4>
+                <table class="admin-table" id="adminBooksTable"></table>
+            </div>
+            <div>
+                <h4>Poems</h4>
+                <table class="admin-table" id="adminPoemsTable"></table>
+            </div>
+        </div>
+
+        <div style="text-align:center; margin-bottom:3rem;">
+            <button class="btn btn-danger" onclick="resetToDefault()">Reset to Default Data</button>
+            <button class="btn" style="background:var(--text-muted); margin-left:10px;" onclick="adminLogout()">Log Out</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL -->
+<div id="previewModal" class="modal-overlay" onclick="handleModalBackground(event)">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closePreview()" aria-label="Close preview">×</button>
+        <img id="modalImage" class="modal-img" src="" alt="Cover" style="display:none;">
+        <h2 id="modalTitle" class="modal-title"></h2>
+        <div id="modalText" class="modal-text"></div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<!-- FOOTER -->
+<footer>
+    © 2026 Synapse · Created by Kavyansh Tomar
+</footer>
+
+<!-- JAVASCRIPT -->
+<script>
+    // CREDENTIALS - Change these to whatever you prefer!
+    const ADMIN_USER = "admin";
+    const ADMIN_PASS = "synapse2026";
+
+    const pageIds = ["home", "articles", "topics", "books-by-kt", "poems-for-kidz", "about", "contact", "admin"];
+
+    // DEFAULT DATA
+    const defaultArticles = [
+        {
+            id: "art-1",
+            title: "The Future of Human-AI Collaboration",
+            tag: "Technology",
+            desc: "Artificial intelligence is changing the way people create, research, learn and solve problems. The next stage may be less about replacing humans and more about collaboration.",
+            content: `Artificial intelligence is changing the way people work, learn, research and create.\n\nThe most interesting question may not be whether machines will replace humans.\n\nInstead, it may be how humans and intelligent systems can collaborate.\n\nAI can process enormous amounts of information, recognize patterns and assist with repetitive tasks.\n\nHumans contribute imagination, judgment, experience, empathy and purpose.\n\nThe future of technology may therefore become a partnership between human creativity and machine capability.\n\nThe strongest results can emerge when both work together.`
+        },
+        {
+            id: "art-2",
+            title: "Neural Interface Evolution",
+            tag: "Technology",
+            desc: "Examining milestones in direct brain-computer integration and digital communication.",
+            content: `Neural Interface Evolution\n\nCategory: Technology\n\nThis topic explores ideas, developments and questions connected with technology.\n\nSynapse presents these topics as starting points for curiosity, research and further discussion.`
+        },
+        {
+            id: "art-3",
+            title: "Quantum Computing Horizons",
+            tag: "Technology",
+            desc: "How qubits and quantum algorithms may reshape computing, security and scientific simulation.",
+            content: `Quantum Computing Horizons\n\nCategory: Technology\n\nThis topic explores ideas, developments and questions connected with technology.`
+        },
+        {
+            id: "art-4",
+            title: "The Ethics of Synthetic Minds",
+            tag: "Philosophy",
+            desc: "Moral questions surrounding increasingly sophisticated artificial systems.",
+            content: `The Ethics of Synthetic Minds\n\nCategory: Philosophy\n\nThis topic explores moral questions surrounding synthetic minds.`
+        }
+    ];
+
+    const defaultBooks = [
+        {
+            id: "book-1",
+            title: "Walking Through the Shadows",
+            genre: "Biographies",
+            author: "Kavyansh Tomar",
+            price: "₹750",
+            img: "walking t the shadows.jpeg",
+            desc: "A detailed biography exploring Cristiano Ronaldo's childhood, determination, football journey and rise to global fame.",
+            preview: `Walking Through the Shadows\nThe Complete Biography of Cristiano Ronaldo\n\nWritten and Curated by Kavyansh Tomar\n\nChapter 1: Roots in the Atlantic — The Funchal Boyhood\n\nNestled in the Atlantic Ocean, the island of Madeira became the beginning of Cristiano Ronaldo's extraordinary journey.\n\nBorn in Funchal on February 5, 1985, Ronaldo grew up in a modest household. Football became his escape, his passion and eventually his purpose.`,
+            docx: "Books/Walking-Through-the-Shadows.docx"
+        },
+        {
+            id: "book-2",
+            title: "The Untold Story of the Haunted Valley",
+            genre: "Horror & Fantasy",
+            author: "Kavyansh Tomar",
+            price: "₹750",
+            img: "the untold story of the hv.jpeg",
+            desc: "A dark magical story set around Blackthorn Academy, a mysterious school hidden deep inside the Carpathian Mountains.",
+            preview: `THE UNTOLD STORY OF THE HAUNTED VALLEY\n\nPROLOGUE — THE THIRTEENTH BELL\n\nThe first bell rang at midnight. Nobody in Blackthorn Academy was supposed to hear it.\n\nThirteen-year-old Adrian Vale stood alone in the corridor outside Room 13.`,
+            docx: "Books/Untold-Story-of-the-Haunted-Valley.docx"
+        }
+    ];
+
+    const defaultPoems = [
+        {
+            id: "poem-1",
+            title: "Neon Quest: My World of Dreams",
+            text: `In a world of neon light,
+Where dreams awaken in the night,
+I walk through skies of violet blue,
+And build a world that feels brand new.
+
+Machines may think,
+And screens may glow,
+But imagination makes me grow.
+
+I chase ideas across the sky,
+I build new worlds and wonder why.
+The future waits beyond the screen,
+A place of things we've never seen.
+
+So let the neon lights shine bright,
+And let my dreams take flight.
+For every thought that starts today,
+Could change the world in some way.`
+        }
+    ];
+
+    // INITIALIZE LOCALSTORAGE DATA IF NOT PRESENT
+    if (!localStorage.getItem("synapse_articles")) {
+        localStorage.setItem("synapse_articles", JSON.stringify(defaultArticles));
+    }
+    if (!localStorage.getItem("synapse_books")) {
+        localStorage.setItem("synapse_books", JSON.stringify(defaultBooks));
+    }
+    if (!localStorage.getItem("synapse_poems")) {
+        localStorage.setItem("synapse_poems", JSON.stringify(defaultPoems));
+    }
+
+    // RENDER WEBSITE CONTENT
+    function renderSite() {
+        const articles = JSON.parse(localStorage.getItem("synapse_articles"));
+        const books = JSON.parse(localStorage.getItem("synapse_books"));
+        const poems = JSON.parse(localStorage.getItem("synapse_poems"));
+
+        // 1. Featured Grid (Home)
+        const featuredGrid = document.getElementById("featuredGrid");
+        if (featuredGrid) {
+            let html = "";
+            articles.slice(0, 3).forEach(art => {
+                html += `
+                    <article class="card">
+                        <div class="card-content">
+                            <span class="tag">${art.tag}</span>
+                            <h3>${art.title}</h3>
+                            <p>${art.desc}</p>
+                            <button class="btn btn-primary" onclick="openArticleModal('${art.id}')">Read Article</button>
+                        </div>
+                    </article>
+                `;
+            });
+            featuredGrid.innerHTML = html;
+        }
+
+        // 2. Articles Page
+        const articlesGrid = document.getElementById("articlesGrid");
+        if (articlesGrid) {
+            let html = "";
+            articles.forEach(art => {
+                html += `
+                    <article class="card">
+                        <div class="card-content">
+                            <span class="tag">${art.tag}</span>
+                            <h3>${art.title}</h3>
+                            <p>${art.desc}</p>
+                            <div class="card-actions">
+                                <button class="btn" onclick="openArticleModal('${art.id}')">Read</button>
+                                <button class="btn" onclick="likeArticle()">♥ Like</button>
+                                <button class="btn" onclick="commentArticle()">Comment</button>
+                                <button class="btn" onclick="shareArticle()">Share</button>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            });
+            articlesGrid.innerHTML = html;
+        }
+
+        // 3. Topics Page (Grouped by Category)
+        const topicsContainer = document.getElementById("topicsContainer");
+        if (topicsContainer) {
+            const categories = {};
+            articles.forEach(art => {
+                if (!categories[art.tag]) categories[art.tag] = [];
+                categories[art.tag].push(art);
+            });
+
+            let html = "";
+            for (const [cat, list] of Object.entries(categories)) {
+                html += `
+                    <div style="margin-bottom:3rem;">
+                        <h2 style="font-size:1.8rem; margin-bottom:1.5rem; border-bottom:2px solid var(--border-color); padding-bottom:.5rem;">
+                            📂 ${cat}
+                        </h2>
+                        <div class="grid">
+                `;
+                list.forEach(item => {
+                    html += `
+                        <article class="card">
+                            <div class="card-content">
+                                <span class="tag">${item.tag}</span>
+                                <h3>${item.title}</h3>
+                                <p>${item.desc}</p>
+                                <button class="btn btn-primary" onclick="openArticleModal('${item.id}')">Explore Article</button>
+                            </div>
+                        </article>
+                    `;
+                });
+                html += `</div></div>`;
+            }
+            topicsContainer.innerHTML = html;
+        }
+
+        // 4. Books Page
+        const booksContainer = document.getElementById("booksContainer");
+        if (booksContainer) {
+            const genres = {};
+            books.forEach(b => {
+                if (!genres[b.genre]) genres[b.genre] = [];
+                genres[b.genre].push(b);
+            });
+
+            let html = "";
+            for (const [genre, list] of Object.entries(genres)) {
+                html += `
+                    <div class="genre-section">
+                        <h3 class="genre-title">📚 ${genre}</h3>
+                `;
+                list.forEach(book => {
+                    html += `
+                        <div class="ebook-card">
+                            <div class="ebook-badge">New Release</div>
+                            <img src="${book.img}" alt="${book.title}" class="ebook-cover" onerror="this.src='https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=300&auto=format&fit=crop'">
+                            <div class="ebook-content">
+                                <div>
+                                    <h4 class="ebook-title">${book.title}</h4>
+                                    <p class="ebook-author">By ${book.author}</p>
+                                    <p class="ebook-description">${book.desc}</p>
+                                </div>
+                                <div class="ebook-footer">
+                                    <span class="ebook-price">${book.price}</span>
+                                    <button class="ebook-btn" onclick="openBookPreview('${book.title}', '${book.img}', \`${book.preview.replace(/`/g, '\\`')}\`)">Preview</button>
+                                    <a href="${book.docx}" download class="ebook-btn" style="text-decoration:none;">Download DOCX</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+            booksContainer.innerHTML = html;
+        }
+
+        // 5. Poems Page
+        const poemsContainer = document.getElementById("poemsContainer");
+        if (poemsContainer) {
+            let html = "";
+            poems.forEach(p => {
+                html += `
+                    <div class="poem-card">
+                        <h2 class="poem-title">${p.title}</h2>
+                        <p class="poem-author">By Kavyansh Tomar</p>
+                        <div class="poem-text">${p.text}</div>
+                    </div>
+                `;
+            });
+            poemsContainer.innerHTML = html;
+        }
+
+        // 6. Admin Tables Refresh
+        renderAdminTables();
+    }
+
+    // PAGE NAVIGATION
+    function switchPage(pageId, updateHash = true) {
+        if (!pageIds.includes(pageId)) pageId = "home";
+        
+        // Block direct route switching to admin unless logged in
+        if (pageId === 'admin' && sessionStorage.getItem("synapse_logged_in") !== "true") {
+            pageId = "home";
+        }
+
+        document.querySelectorAll(".page-view").forEach(page => page.classList.remove("active-page"));
+        const target = document.getElementById(pageId);
+        if (target) target.classList.add("active-page");
+
+        document.querySelectorAll("nav a").forEach(link => link.classList.remove("active"));
+        const navLink = document.getElementById("nav-" + pageId);
+        if (navLink) navLink.classList.add("active");
+
+        if (updateHash) {
+            history.replaceState(null, "", "#" + pageId);
+        }
+
+        const nav = document.getElementById("siteNav");
+        const toggle = document.getElementById("menuToggle");
+        if (nav) nav.classList.remove("open");
+        if (toggle) {
+            toggle.textContent = "☰";
+            toggle.setAttribute("aria-expanded", "false");
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // ADMIN NAV CLICK HANDLER (Checks Login)
+    function handleAdminNavClick() {
+        if (sessionStorage.getItem("synapse_logged_in") === "true") {
+            switchPage('admin');
+        } else {
+            promptAdminLogin();
+        }
+    }
+
+    // SECURE ADMIN LOGIN (Username & Password)
+    function promptAdminLogin() {
+        const user = prompt("Enter Admin Username:");
+        if (user === null) return;
+        const pass = prompt("Enter Admin Password:");
+        if (pass === null) return;
+
+        if (user === ADMIN_USER && pass === ADMIN_PASS) {
+            sessionStorage.setItem("synapse_logged_in", "true");
+            switchPage('admin');
+            showToast("Welcome to Admin Panel!");
+        } else {
+            alert("Invalid username or password!");
+        }
+    }
+
+    function adminLogout() {
+        sessionStorage.removeItem("synapse_logged_in");
+        switchPage('home');
+        showToast("Logged out successfully.");
+    }
+
+    // ADMIN ACTIONS: ADD
+    function handleAddArticle(e) {
+        e.preventDefault();
+        const articles = JSON.parse(localStorage.getItem("synapse_articles"));
+        const newArt = {
+            id: "art-" + Date.now(),
+            title: document.getElementById("artTitle").value,
+            tag: document.getElementById("artTag").value,
+            desc: document.getElementById("artDesc").value,
+            content: document.getElementById("artContent").value
+        };
+        articles.unshift(newArt);
+        localStorage.setItem("synapse_articles", JSON.stringify(articles));
+        renderSite();
+        showToast("Article published successfully!");
+        e.target.reset();
+    }
+
+    function handleAddBook(e) {
+        e.preventDefault();
+        const books = JSON.parse(localStorage.getItem("synapse_books"));
+        const newBook = {
+            id: "book-" + Date.now(),
+            title: document.getElementById("bookTitle").value,
+            genre: document.getElementById("bookGenre").value,
+            author: document.getElementById("bookAuthor").value,
+            price: document.getElementById("bookPrice").value,
+            img: document.getElementById("bookImg").value,
+            desc: document.getElementById("bookDesc").value,
+            preview: document.getElementById("bookPreview").value,
+            docx: document.getElementById("bookDocx").value
+        };
+        books.unshift(newBook);
+        localStorage.setItem("synapse_books", JSON.stringify(books));
+        renderSite();
+        showToast("Book added successfully!");
+        e.target.reset();
+    }
+
+    function handleAddPoem(e) {
+        e.preventDefault();
+        const poems = JSON.parse(localStorage.getItem("synapse_poems"));
+        const newPoem = {
+            id: "poem-" + Date.now(),
+            title: document.getElementById("poemTitle").value,
+            text: document.getElementById("poemText").value
+        };
+        poems.unshift(newPoem);
+        localStorage.setItem("synapse_poems", JSON.stringify(poems));
+        renderSite();
+        showToast("Poem published successfully!");
+        e.target.reset();
+    }
+
+    // ADMIN ACTIONS: DELETE
+    function deleteItem(type, id) {
+        if (!confirm("Are you sure you want to delete this item?")) return;
+        if (type === 'article') {
+            let items = JSON.parse(localStorage.getItem("synapse_articles"));
+            items = items.filter(i => i.id !== id);
+            localStorage.setItem("synapse_articles", JSON.stringify(items));
+        } else if (type === 'book') {
+            let items = JSON.parse(localStorage.getItem("synapse_books"));
+            items = items.filter(i => i.id !== id);
+            localStorage.setItem("synapse_books", JSON.stringify(items));
+        } else if (type === 'poem') {
+            let items = JSON.parse(localStorage.getItem("synapse_poems"));
+            items = items.filter(i => i.id !== id);
+            localStorage.setItem("synapse_poems", JSON.stringify(items));
+        }
+        renderSite();
+        showToast("Item deleted successfully!");
+    }
+
+    function resetToDefault() {
+        if (confirm("Reset everything back to original default content?")) {
+            localStorage.setItem("synapse_articles", JSON.stringify(defaultArticles));
+            localStorage.setItem("synapse_books", JSON.stringify(defaultBooks));
+            localStorage.setItem("synapse_poems", JSON.stringify(defaultPoems));
+            renderSite();
+            showToast("Reset to default successfully!");
+        }
+    }
+
+    function renderAdminTables() {
+        const articles = JSON.parse(localStorage.getItem("synapse_articles"));
+        const books = JSON.parse(localStorage.getItem("synapse_books"));
+        const poems = JSON.parse(localStorage.getItem("synapse_poems"));
+
+        // Articles Table
+        let artHtml = `<tr><th>Title</th><th>Category</th><th>Action</th></tr>`;
+        articles.forEach(a => {
+            artHtml += `<tr><td>${a.title}</td><td>${a.tag}</td><td><button class="btn btn-danger" style="padding:0.3rem 0.6rem;font-size:0.75rem;" onclick="deleteItem('article', '${a.id}')">Delete</button></td></tr>`;
+        });
+        document.getElementById("adminArticlesTable").innerHTML = artHtml;
+
+        // Books Table
+        let bookHtml = `<tr><th>Title</th><th>Genre</th><th>Action</th></tr>`;
+        books.forEach(b => {
+            bookHtml += `<tr><td>${b.title}</td><td>${b.genre}</td><td><button class="btn btn-danger" style="padding:0.3rem 0.6rem;font-size:0.75rem;" onclick="deleteItem('book', '${b.id}')">Delete</button></td></tr>`;
+        });
+        document.getElementById("adminBooksTable").innerHTML = bookHtml;
+
+        // Poems Table
+        let poemHtml = `<tr><th>Title</th><th>Action</th></tr>`;
+        poems.forEach(p => {
+            poemHtml += `<tr><td>${p.title}</td><td><button class="btn btn-danger" style="padding:0.3rem 0.6rem;font-size:0.75rem;" onclick="deleteItem('poem', '${p.id}')">Delete</button></td></tr>`;
+        });
+        document.getElementById("adminPoemsTable").innerHTML = poemHtml;
+    }
+
+    // MODAL TRIGGERS
+    function openArticleModal(id) {
+        const articles = JSON.parse(localStorage.getItem("synapse_articles"));
+        const art = articles.find(a => a.id === id);
+        if (art) {
+            showModal(art.title, "", art.content);
+        }
+    }
+
+    function openBookPreview(title, image, text) {
+        showModal(title, image, text);
+    }
+
+    function showModal(title, image, text) {
+        const modal = document.getElementById("previewModal");
+        document.getElementById("modalTitle").textContent = title;
+        document.getElementById("modalText").textContent = text;
+        const modalImg = document.getElementById("modalImage");
+        if (image) {
+            modalImg.src = image;
+            modalImg.style.display = "block";
+        } else {
+            modalImg.style.display = "none";
+        }
+        modal.classList.add("active");
+        document.body.style.overflow = "hidden";
+    }
+
+    function closePreview() {
+        document.getElementById("previewModal").classList.remove("active");
+        document.body.style.overflow = "";
+    }
+
+    function handleModalBackground(event) {
+        if (event.target === document.getElementById("previewModal")) {
+            closePreview();
+        }
+    }
+
+    // INTERACTIONS
+    function likeArticle() { showToast("Thanks for supporting the article ♥"); }
+    function commentArticle() {
+        const comment = prompt("Write your comment:");
+        if (comment && comment.trim()) showToast("Comment added!");
+    }
+    async function shareArticle() {
+        try {
+            if (navigator.share) {
+                await navigator.share({ title: "Synapse Article", url: window.location.href });
+            } else {
+                await navigator.clipboard.writeText(window.location.href);
+                showToast("Article link copied!");
+            }
+        } catch (e) {}
+    }
+
+    let toastTimer;
+    function showToast(message) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove("show"), 2500);
+    }
+
+    // MOBILE MENU
+    document.getElementById("menuToggle").addEventListener("click", function () {
+        const nav = document.getElementById("siteNav");
+        const open = nav.classList.toggle("open");
+        this.setAttribute("aria-expanded", String(open));
+        this.textContent = open ? "✕" : "☰";
+    });
+
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Escape") closePreview();
+    });
+
+    // INITIAL LOAD
+    function loadPageFromHash() {
+        const hash = window.location.hash.replace("#", "").trim();
+        if (hash === 'admin' && sessionStorage.getItem("synapse_logged_in") !== "true") {
+            switchPage("home", false);
+            return;
+        }
+        if (pageIds.includes(hash)) {
+            switchPage(hash, false);
+        } else {
+            switchPage("home", false);
+        }
+    }
+
+    window.addEventListener("hashchange", loadPageFromHash);
+    renderSite();
+    loadPageFromHash();
+</script>
+
+</body>
+</html>
